@@ -1,4 +1,4 @@
-﻿@page "/fetchdata"
+﻿@page "/signalr"
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager Navigation
 
@@ -47,7 +47,6 @@
 
     private async Task ChangeStockSymbol()
     {
-        //stockData = "Fetching data...";
         await StartAutoUpdates();
     }
 

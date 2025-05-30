@@ -1,0 +1,62 @@
+﻿@page "/fetchdata"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+
+<h4>real time data</h4>
+<div>
+    <h5>@stock</h5>
+    <p>@currentPRice</p>
+</div>
+
+<input type="text" @bind="stock" placeholder="Enter Stock Symbol" />
+<button @onclick="ChangeStockSymbol">Fetch Stock Price</button>
+@code {
+    private HubConnection? _hubConnection;
+    private string stock = "TCS"; // Default stock symbol
+    private string currentPRice;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+             .WithUrl(Navigation.ToAbsoluteUri("/stockHub"))
+             .Build();
+
+        _hubConnection.On<string>("ReceiveStockUpdate", (price) =>
+        {
+            currentPRice = price;
+            InvokeAsync(StateHasChanged);
+            //     await InvokeAsync(() =>
+            //{
+            //    stockData = data;
+            //    StateHasChanged();
+            //});
+        });
+
+        await _hubConnection.StartAsync();
+        await StartAutoUpdates();
+
+    }
+
+    private async Task StartAutoUpdates()
+    {
+        if (_hubConnection != null)
+        {
+            await _hubConnection.InvokeAsync("StartStockUpdates", stock);
+        }
+    }
+
+    private async Task ChangeStockSymbol()
+    {
+        //stockData = "Fetching data...";
+        await StartAutoUpdates();
+    }
+
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+}

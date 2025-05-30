@@ -1,0 +1,47 @@
+﻿@page "/azureblob"
+@inject BlobStorageService BlobService
+
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="DownloadFilePdf">DownloadFilePdf</button>
+
+<button  class="btn btn-primary" @onclick="DownloadFile">Download File</button>
+@if (fileContent != null)
+{
+    <pre>@fileContent</pre>
+}
+
+
+@code {
+    private int currentCount = 0;
+    private string fileContent;
+    private async Task DownloadFile()
+    {
+        var bytes = await BlobService.GetFileAsync("a.html");
+        if (bytes != null)
+        {
+            fileContent = System.Text.Encoding.UTF8.GetString(bytes);
+        }
+    }
+    private async Task DownloadFilePdf()
+    {
+        var bytes = await BlobService.GetFileAsync("AzurePipeline.pdf");
+        if (bytes != null)
+        {
+            fileContent = System.Text.Encoding.UTF8.GetString(bytes);
+        }
+    }
+
+    //Azure.Storage.Blobs
+
+
+    //keyvalut
+    //Azure.Extensions.AspNetCore.Configuration.Secrets
+    //Azure.Identity
+    //craet secret
+}

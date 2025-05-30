@@ -1,0 +1,44 @@
+﻿@using  BlazorApp1.Data;
+@inject ISingletonService _singletonService1;
+@inject ISingletonService _singletonService2;
+@inject IScopedService _scopedService1;
+@inject IScopedService _scopedService2;
+@inject ITransientService _transientService1;
+@inject ITransientService _transientService2;
+
+@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<h1>Dependency Injection Example</h1>
+<p>Singleton Service ID1: @_CustomMiddle.SingletonId1 </p>
+<p>Singleton Service ID2: @_CustomMiddle.SingletonId2 </p>
+
+<p>Scoped Service ID1: @_CustomMiddle.ScopedId1</p>
+<p>Scoped Service ID2: @_CustomMiddle.ScopedId2</p>
+
+<p>Transient Service ID1: @_CustomMiddle.TransientId1</p>
+<p>Transient Service ID2: @_CustomMiddle.TransientId2</p>
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code{
+    //public Guid SingletonId { get; set; }
+    //public Guid ScopedId { get; set; }
+    //public Guid TransientId { get; set; }
+
+    CustomMiddle _CustomMiddle;
+
+    protected override void OnInitialized()
+    {
+        _CustomMiddle = new CustomMiddle(_singletonService1, _singletonService2, _scopedService1, _scopedService2, _transientService1, _transientService2);
+        _CustomMiddle.OnGet();
+        //SingletonId = _CustomMiddle.SingletonId;
+        //ScopedId = _CustomMiddle.ScopedId;
+        //TransientId = _CustomMiddle.TransientId;
+    }
+}

@@ -12,11 +12,9 @@ namespace BlazorApp1.Data
         {
             _hubContext = hubContext;
         }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             string symbol = "TCS.NS";
-
             var (stockSymbol, price) = await GetStock(symbol);
             await _hubContext.Clients.All.SendAsync("ReceiveStockUpdate", stockSymbol, price);
         }
@@ -29,22 +27,11 @@ namespace BlazorApp1.Data
                 var stock = securities[stockSymbo];
                 var p = stock[Field.RegularMarketPrice];
                 return (stockSymbo, Convert.ToDecimal(p));
-
             }
             catch (Exception ex)
             {
                 return (stockSymbo,0);
-                // var random = new Random();
-                // decimal pricee = 0;
-                // while (true)
-                // {
-                //     pricee = 50 + (decimal)(random.NextDouble() * 5);
-                //     await _hubContext.Clients.All.SendAsync("ReceiveStockUpdate", stockSymbo, //pricee);
-                //
-                //     await Task.Delay(1000);
-                // }
             }
-
         }
     }
 }

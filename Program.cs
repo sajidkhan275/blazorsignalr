@@ -20,10 +20,6 @@ builder.Services.AddHostedService(provider => provider.GetRequiredService<StockB
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddSingleton<ISingletonService, TaskService>();
-builder.Services.AddScoped<IScopedService, TaskService>();
-builder.Services.AddTransient<ITransientService, TaskService>();
-
 
 string blobConnString = builder.Configuration.GetConnectionString("AzureBlobStorage");
 string containerName = "demoblobcontainer";

@@ -1,0 +1,68 @@
+﻿@page "/editcontext-example"
+@using System.ComponentModel.DataAnnotations
+
+<h3>Simple EditContext Example</h3>
+
+<EditForm EditContext="@editContext" OnValidSubmit="@HandleValidSubmit">
+    <ValidationSummary />
+
+    <div>
+        <label>Name:</label><br />
+        <InputText @bind-Value="person.Name" class="form-control" />
+        <ValidationMessage For="@(() => person.Name)" />
+
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2" disabled="@(!editContext.Validate())">Submit</button>
+</EditForm>
+
+@code {
+    private Person person = new();
+    private EditContext editContext;
+    private ValidationMessageStore messageStore;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(person);
+        messageStore = new ValidationMessageStore(editContext);
+        editContext.OnFieldChanged += HandleFieldChanged;
+        //editContext.OnFieldChanged += (_, e) => ValidateField(e.FieldIdentifier);
+    }
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("Form Submitted Successfully!");
+    }
+
+    private void HandleFieldChanged(object sender, FieldChangedEventArgs e)
+    {
+        Console.WriteLine($"Field Changed: {e.FieldIdentifier.FieldName}");
+    }
+
+    // private void ValidateField(FieldIdentifier fieldIdentifier)
+    // {
+    //     messageStore.Clear(fieldIdentifier);
+
+    //     // Example validation rule: Name is required and must be at least 3 characters
+    //     if (fieldIdentifier.FieldName == nameof(person.Name))
+    //     {
+    //         if (string.IsNullOrWhiteSpace(person.Name))
+    //         {
+    //             messageStore.Add(fieldIdentifier, "Name is required.");
+    //         }
+    //         else if (person.Name.Length < 3)
+    //         {
+    //             messageStore.Add(fieldIdentifier, "Name must be at least 3 characters long.");
+    //         }
+    //     }
+
+    //     editContext.NotifyValidationStateChanged();
+    // }
+
+    public class Person
+    {
+        [Required(ErrorMessage = "Name is required.")]
+        [StringLength(30, MinimumLength = 3, ErrorMessage = "MinimumLength 3 characters")]
+        public string Name { get; set; }
+    }
+}
